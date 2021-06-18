@@ -1,0 +1,17 @@
+MySQL:
+  Username: aaa
+  Password: 111111
+  Address: 192.168.1.234
+  Port: 3306
+  Database: go_im
+QNY:
+  QINIU_DOMAIN: xxx
+  QINIU_ACCESS_KEY: xxxx
+  QINIU_SECRET_KEY: xxxx
+  QINIU_TEST_BUCKET: xxxx
+Redis: # redis
+  #Address: 127.0.0.1:6379
+  Address: 192.168.1.234:6379
+  Port: 6379
+  Password:
+token_key:

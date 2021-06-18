@@ -14,6 +14,7 @@ func RegisterRoutes(r *mux.Router)  {
 	// 不需要验证
 	indexRouter := r.PathPrefix("/index").Subrouter()
 	// 绑定请求的处理函数
-	indexRouter.HandleFunc("/getCaptcha", ctrl.GetCaptcha).Methods(http.MethodPost)
+	indexRouter.HandleFunc("/getCaptcha", ctrl.GetCaptcha).Methods(http.MethodPost)  // 获取验证码
+	indexRouter.HandleFunc("/user/register", ctrl.UserRegister).Methods(http.MethodPost) // 注册
 
 }

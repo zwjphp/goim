@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"github.com/google/uuid"
@@ -9,9 +10,9 @@ import (
 )
 
 type configJsonBody struct {
-	Id 			string
-	CaptchaType string
-	VerifyValue string
+	Id 			  string
+	CaptchaType   string
+	VerifyValue   string
 	DriverAudio   *base64Captcha.DriverAudio
 	DriverString  *base64Captcha.DriverString
 	DriverChinese *base64Captcha.DriverChinese
@@ -37,4 +38,11 @@ func GenerateCaptchaHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf(err.Error())
 	}
 	w.Write(ret)
+}
+
+func CaptchaVerifyHandle(UUID, Code string) error {
+	if !store.Verify(UUID, Code, true) {
+		return errors.New("验证码错误")
+	}
+	return nil
 }
