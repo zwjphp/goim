@@ -16,5 +16,6 @@ func RegisterRoutes(r *mux.Router)  {
 	// 绑定请求的处理函数
 	indexRouter.HandleFunc("/getCaptcha", ctrl.GetCaptcha).Methods(http.MethodPost)  // 获取验证码
 	indexRouter.HandleFunc("/user/register", ctrl.UserRegister).Methods(http.MethodPost) // 注册
+	indexRouter.HandleFunc("/user/login", ctrl.UserLogin).Methods(http.MethodPost) // 登录
 
 }

@@ -40,3 +40,41 @@ func (s *UserService) Register(mobile, plainpwd, nickname, avatar, sex string) (
 	log.Warn()
 	return tmp, err
 }
+
+// 登录
+func (s *UserService) Login(mobile, plainpwd string) (user model.User, err error) {
+	tmp := model.User{}
+	_, err = DbEngin.Where("mobile=?", mobile).Get(&tmp)
+	if err != nil {
+		return tmp, err
+	}
+	// 账号不存在
+	if tmp.Id == 0 {
+		return tmp, errors.New("账号不存在")
+	}
+	// 检测密码
+	if !util.ValidatePasswd(plainpwd, tmp.Salt, tmp.Passwd) {
+		return tmp, errors.New("密码不正确")
+	}
+	str := fmt.Sprintf("%d", time.Now().Unix())
+	token := util.Md5Encode(str)
+	tmp.Token = token
+	DbEngin.ID(tmp.Id).Cols("token").Update(&tmp)
+	return tmp, nil
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
