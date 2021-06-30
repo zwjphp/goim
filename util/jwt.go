@@ -3,6 +3,8 @@ package util
 import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
+	"io"
+	"net/http"
 	"time"
 )
 
@@ -12,19 +14,40 @@ type MyClaims struct {
 }
 
 const TokenExpireDuration = time.Hour * 2
-var MySecret = []byte("aaa");
+var MySecret = []byte("夏天夏天悄悄过去")
 
-func GenToken(username string) (string, error){
+// GenToken 生成JWT
+func GenToken(username string) (string, error) {
+	// 创建一个我们自己的声明
 	c := MyClaims{
-		username,
+		username, // 自定义字段
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(), // 过期时间
-			Issuer:"my-project",  // 签发人
+			Issuer:    "my-project",                               // 签发人
 		},
 	}
-   token := jwt.NewWithClaims(jwt.SigningMethodES256, c)
-   if len(MySecret) == 0 {
-   		return "", errors.New("token_key为空")
-   }
-   return token.SignedString(MySecret)
+	// 使用指定的签名方法创建签名对象
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
+	if len(MySecret) == 0 {
+		return "", errors.New("token_key为空")
+	}
+	// 使用指定的secret签名并获得完整的编码后的字符串token
+	return token.SignedString(MySecret)
+}
+
+// AuthHandler: 获取Token
+func AuthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	r.ParseForm()
+	// 检查提供的凭据-如果将这些凭据存储在数据库中，则查询将在此处进行检查。
+	username := r.Form.Get("username")
+	password := r.Form.Get("password")
+
+	if username != "myusername" || password != "mypassword" {
+		io.WriteString(w, `{"error":"账号或密码错误"}`)
+		return
+	}
+	tokenString, _ := GenToken(username)
+	io.WriteString(w, `{"token":"`+tokenString+`"}`)
+	return
 }

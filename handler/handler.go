@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/gorilla/mux"
 	"goim/ctrl"
+	"goim/util"
 	"net/http"
 )
 
@@ -17,5 +18,6 @@ func RegisterRoutes(r *mux.Router)  {
 	indexRouter.HandleFunc("/getCaptcha", ctrl.GetCaptcha).Methods(http.MethodPost)  // 获取验证码
 	indexRouter.HandleFunc("/user/register", ctrl.UserRegister).Methods(http.MethodPost) // 注册
 	indexRouter.HandleFunc("/user/login", ctrl.UserLogin).Methods(http.MethodPost) // 登录
+	indexRouter.HandleFunc("/auth", util.AuthHandler).Methods(http.MethodPost)  // 获取token
 
 }
