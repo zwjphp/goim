@@ -20,4 +20,8 @@ func RegisterRoutes(r *mux.Router)  {
 	indexRouter.HandleFunc("/user/login", ctrl.UserLogin).Methods(http.MethodPost) // 登录
 	indexRouter.HandleFunc("/auth", util.AuthHandler).Methods(http.MethodPost)  // 获取token
 
+	// 文件
+	fileRouter := r.PathPrefix("/attach").Subrouter()
+	fileRouter.HandleFunc("/upload", ctrl.UploadLocal).Methods(http.MethodPost, http.MethodOptions) // 文件上传
+
 }

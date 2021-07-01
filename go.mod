@@ -12,5 +12,6 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/mojocn/base64Captcha v1.3.4
 	github.com/prometheus/common v0.2.0
+	github.com/qiniu/api.v7/v7 v7.8.2
 	github.com/spf13/viper v1.8.0
 )
