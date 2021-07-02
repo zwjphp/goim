@@ -51,3 +51,31 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, `{"token":"`+tokenString+`"}`)
 	return
 }
+
+// ParseToken 解析JWT
+func ParseToken(tokenString string) (*MyClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (i interface{}, e error) {
+		return MySecret, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if claims, ok := token.Claims.(*MyClaims); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, errors.New("令牌无效")
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

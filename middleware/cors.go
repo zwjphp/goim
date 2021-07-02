@@ -1,6 +1,10 @@
 package middleware
 
-import "net/http"
+import (
+	"goim/util"
+	"io"
+	"net/http"
+)
 
 // 跨域
 func Cors(next http.Handler) http.Handler {
@@ -13,6 +17,27 @@ func Cors(next http.Handler) http.Handler {
 		w.Header().Set("content-type", "application/json;charset=UTF-8")                                              //返回数据格式是json
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// JWTAuthMiddleware : 验证Token
+func JWTAuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
+		r.ParseForm()
+		authHeader := r.Form.Get("Authorization") // 路由中的
+		if authHeader == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			io.WriteString(w, `{"code":-2,"msg":"token不存在"}`)
+			return
+		}
+		_, err := util.ParseToken(authHeader)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			io.WriteString(w, `{"code":-3, "msg":`+err.Error()+`}`)
 			return
 		}
 		next.ServeHTTP(w, r)

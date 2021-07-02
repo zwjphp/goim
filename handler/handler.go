@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/gorilla/mux"
 	"goim/ctrl"
+	"goim/middleware"
 	"goim/util"
 	"net/http"
 )
@@ -25,5 +26,9 @@ func RegisterRoutes(r *mux.Router)  {
 	fileRouter.HandleFunc("/upload", ctrl.UploadLocal).Methods(http.MethodPost, http.MethodOptions) // 文件上传
 
 	indexRouter.HandleFunc("/chat", ctrl.Chat) // ws
+
+	// 需要验证Token
+	authRouter := r.PathPrefix("/").Subrouter()
+	authRouter.Use(middleware.JWTAuthMiddleware, middleware.AccessLogging)
 
 }
