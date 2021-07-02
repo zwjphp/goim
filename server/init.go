@@ -9,6 +9,7 @@ import (
 	"goim/config"
 	"goim/model"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/importcjj/sensitive"
 )
 
 var DbEngin *xorm.Engine
@@ -52,4 +53,14 @@ func init() {
 	DbEngin.SetMaxOpenConns(2)
 	DbEngin.Sync2(new(model.User),new(model.Contact),new(model.Community),new(model.Message))
 	fmt.Println("init data base ok")
+}
+
+// 敏感词典
+var Filter *sensitive.Filter
+func init() {
+	Filter = sensitive.New()
+	err := Filter.LoadWordDict("./dict/sensitive.txt")
+	if err != nil {
+		fmt.Println(err)
+	}
 }

@@ -5,7 +5,6 @@ import (
 	"goim/model"
 	"goim/server"
 	"goim/util"
-	"log"
 	"math/rand"
 	"net/http"
 	"time"
