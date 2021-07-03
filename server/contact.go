@@ -1,6 +1,10 @@
 package server
 
-import "goim/model"
+import (
+	"errors"
+	"goim/model"
+	"time"
+)
 
 type ContactService struct {
 }
@@ -16,3 +20,88 @@ func (service *ContactService) SearchComunityIds(userId int64) (comIds []int64) 
 	}
 	return comIds
 }
+
+// 添加好友
+func (service *ContactService) AddFriend(userid, dstid int64) error {
+	// 如果添加自己为好友
+	if userid == dstid {
+		return errors.New("无法添加自己为好友")
+	}
+	// 判断是否已是好友
+	tmp     := model.Contact{}
+	tmpUser := model.User{}
+
+	// 判断将要添加的好友是否存在
+	DbEngin.Where("id = ?", dstid).Get(&tmpUser)
+	// 用户不存在
+	if tmpUser.Id == 0 {
+		return errors.New("用户不存在!")
+	}
+	// 1. 查询是否已经是好友了
+	// 这里是条件链式操作
+	// 获取1条数据
+	DbEngin.Where("ownerid = ?", userid).
+		And("dstobj = ?", dstid).
+		And("cate = ?", model.CONCAT_CATE_USER).
+		Get(&tmp)
+	if tmp.Id > 0 {
+		return errors.New("请勿重复添加好友!")
+	}
+	// 开启事务
+	session  := DbEngin.NewSession()
+	session.Begin()
+	// 插入自己的好友
+	_, e1 := session.InsertOne(model.Contact{
+		Ownerid:  userid,
+		Dstobj:   dstid,
+		Cate:     model.CONCAT_CATE_USER,
+		Createat: time.Time{},
+	})
+
+	// 插入对方的数据
+	_, e2 := session.InsertOne(model.Contact{
+		Ownerid:  dstid,
+		Dstobj:   userid,
+		Cate:     model.CONCAT_CATE_USER,
+		Createat: time.Time{},
+	})
+
+	// 如果成功
+	if e1 == nil && e2 == nil {
+		session.Commit()
+		return nil
+	} else {
+		session.Rollback()
+		if e1 != nil {
+			return e1
+		} else {
+			return e2
+		}
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

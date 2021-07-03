@@ -31,4 +31,6 @@ func RegisterRoutes(r *mux.Router)  {
 	authRouter := r.PathPrefix("/").Subrouter()
 	authRouter.Use(middleware.JWTAuthMiddleware, middleware.AccessLogging)
 
+	authRouter.HandleFunc("/contact/addfriend", ctrl.Addfriend).Methods(http.MethodPost) // 添加好友
+
 }
