@@ -81,6 +81,24 @@ func (service *ContactService) AddFriend(userid, dstid int64) error {
 
 }
 
+// 查找好友列表
+func (service *ContactService) SearchFriend(userId int64) []model.User {
+	conconts := make([]model.Contact, 0)
+	objIds := make([]int64, 0)
+	// 查找好友列表
+	DbEngin.Where("ownerid = ? and cate = ?", userId, model.CONCAT_CATE_USER).Find(&conconts)
+	for _, v := range conconts {
+		objIds = append(objIds, v.Dstobj)
+	}
+	coms := make([]model.User, 0)
+	// 未查询到好友
+	if len(objIds) == 0 {
+		return coms
+	}
+	DbEngin.In("id", objIds).Find(&coms)
+	return coms
+}
+
 
 
 

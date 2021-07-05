@@ -27,3 +27,33 @@ func Addfriend(w http.ResponseWriter, r *http.Request) {
 		util.RespOk(w, nil, "好友添加成功")
 	}
 }
+
+func LoadFriend(w http.ResponseWriter, r *http.Request) {
+	var arg args.ContactArg
+	util.Bind(r, &arg)
+	if arg.Userid == 0 {
+		util.RespFail(w, "参数错误")
+		return
+	}
+	users := contactService.SearchFriend(arg.Userid)
+	util.RespOkList(w, users, len(users))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
