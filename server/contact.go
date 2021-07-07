@@ -99,6 +99,47 @@ func (service *ContactService) SearchFriend(userId int64) []model.User {
 	return coms
 }
 
+// 创建群
+func (service *ContactService) CreateCommunity(comm model.Community) (ret model.Community, err error) {
+	if len(comm.Name) == 0 {
+		return ret, errors.New("请输入群名称")
+	}
+	if comm.Ownerid == 0 {
+		return ret, errors.New("请先登录")
+	}
+	com := model.Community{
+		Ownerid:  comm.Ownerid,
+	}
+	// 判断建群数量
+	num, err := DbEngin.Count(&com)
+	if num > 5 {
+		return ret, errors.New("一个用户最多创建5个群")
+	} else {
+		comm.Createat = time.Now()
+		// 开启事务
+		session := DbEngin.NewSession()
+		session.Begin()
+		_, err = session.InsertOne(&comm)
+		if err != nil {
+			// 回滚事务
+			session.Rollback()
+			return com, err
+		}
+		_, err := session.InsertOne(
+			model.Contact{
+				Ownerid:  comm.Ownerid,
+				Dstobj:   comm.Id,
+				Cate:     model.CONCAT_CATE_COMUNITY,
+				Createat: time.Now(),
+			})
+		if err != nil {
+			session.Rollback()
+		} else {
+			session.Commit()
+		}
+		return com, err
+	}
+}
 
 
 

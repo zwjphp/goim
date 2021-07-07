@@ -34,4 +34,7 @@ func RegisterRoutes(r *mux.Router)  {
 	authRouter.HandleFunc("/contact/addfriend", ctrl.Addfriend).Methods(http.MethodPost) // 添加好友
 	authRouter.HandleFunc("/contact/loadfriend", ctrl.LoadFriend).Methods(http.MethodPost) // 加载好友列表
 
+	authRouter.HandleFunc("/contact/createcommunity", ctrl.CreateCommunity).Methods(http.MethodPost) // 创建群
+
+
 }

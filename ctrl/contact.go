@@ -2,6 +2,7 @@ package ctrl
 
 import (
 	"goim/args"
+	"goim/model"
 	"goim/server"
 	"goim/util"
 	"goim/validates"
@@ -37,6 +38,22 @@ func LoadFriend(w http.ResponseWriter, r *http.Request) {
 	}
 	users := contactService.SearchFriend(arg.Userid)
 	util.RespOkList(w, users, len(users))
+}
+
+func CreateCommunity(w http.ResponseWriter, r *http.Request) {
+	var arg model.Community
+	util.Bind(r, &arg)
+	if arg.Ownerid == 0 || len(arg.Name) == 0 || len(arg.Icon) == 0 {
+		util.RespFail(w, "参数错误")
+		return
+	}
+	conn, err := contactService.CreateCommunity(arg)
+	if err != nil {
+		util.RespFail(w, err.Error())
+	} else {
+		util.RespOk(w, conn, "创建群成功")
+	}
+
 }
 
 
