@@ -7,6 +7,7 @@ import (
 	"goim/util"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -71,3 +72,37 @@ func UserRegister(w http.ResponseWriter, r *http.Request) {
 func GetCaptcha(w http.ResponseWriter, r *http.Request) {
 	util.GenerateCaptchaHandler(w, r)
 }
+
+func UpdateUserInfo(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	userid := r.PostForm.Get("userid")
+	avatar := r.PostForm.Get("avatar")
+	if len(userid) == 0 || len(avatar) == 0 {
+		util.RespFail(w, "参数错误")
+		return
+	}
+	id, _ := strconv.Atoi(userid)
+	userService.UserInfo(int64(id), avatar)
+	util.RespOk(w, nil, "")
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

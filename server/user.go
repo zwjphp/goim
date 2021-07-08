@@ -70,6 +70,13 @@ func (s *UserService) Find(userId int64) (user model.User) {
 	return tmp
 }
 
+// 更新用户数据
+func (s *UserService) UserInfo(userId int64, avatar string) {
+	tmp := model.User{}
+	tmp.Avatar = avatar
+	DbEngin.ID(userId).Cols("avatar").Update(&tmp)
+}
+
 
 
 
