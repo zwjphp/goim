@@ -179,3 +179,14 @@ func checkToken(userId int64, token string) bool {
 	user := userService.Find(userId)
 	return user.Token == token
 }
+
+// 添加新的群ID到用户的groupset中
+func AddGroupId(userId, gid int64)  {
+	// 取得node
+	rwlocker.Lock()
+	node, ok := clientMap[userId]
+	if ok {
+		node.GroupSets.Add(gid)
+	}
+	rwlocker.Unlock()
+}

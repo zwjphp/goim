@@ -141,6 +141,42 @@ func (service *ContactService) CreateCommunity(comm model.Community) (ret model.
 	}
 }
 
+// 加入群
+func (service *ContactService) JoinCommunity(userId, comId int64) error {
+	_, err := service.ShowCommunityID(comId)
+	if err != nil {
+		return err
+	}
+	cot := model.Contact{
+		Ownerid:  userId,
+		Dstobj:   comId,
+		Cate:     model.CONCAT_CATE_COMUNITY,
+	}
+	DbEngin.Get(&cot)
+	if cot.Id == 0 {
+		cot.Createat = time.Now()
+		_, err := DbEngin.InsertOne(cot)
+		return err
+	} else if cot.Id > 0 {
+		return errors.New("已在该群")
+	} else {
+		return nil
+	}
+}
+
+// 获取单个群信息
+func (server *ContactService) ShowCommunityID(dstId int64) (ret model.Community, err error) {
+	com := model.Community{
+		Id: dstId,
+	}
+	b, _:= DbEngin.Get(&com)
+	if b == false {
+		return ret, errors.New("该群不存在")
+	} else {
+		return com, nil
+	}
+}
+
 
 
 

@@ -53,7 +53,23 @@ func CreateCommunity(w http.ResponseWriter, r *http.Request) {
 	} else {
 		util.RespOk(w, conn, "创建群成功")
 	}
+}
 
+func JoinCommunity(w http.ResponseWriter, r *http.Request) {
+	var arg args.ContactArg
+	util.Bind(r, &arg)
+	if arg.Userid == 0 || arg.Dstid == 0 {
+		util.RespFail(w, "参数错误")
+		return
+	}
+	err := contactService.JoinCommunity(arg.Userid, arg.Dstid)
+	// todo 刷新用户的群组信息
+	AddGroupId(arg.Userid, arg.Dstid)
+	if err != nil {
+		util.RespFail(w, err.Error())
+	} else {
+		util.RespOk(w, nil, "success")
+	}
 }
 
 
