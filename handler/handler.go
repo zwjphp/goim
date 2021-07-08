@@ -36,6 +36,8 @@ func RegisterRoutes(r *mux.Router)  {
 
 	authRouter.HandleFunc("/contact/createcommunity", ctrl.CreateCommunity).Methods(http.MethodPost) // 创建群
 	authRouter.HandleFunc("/contact/joincommunity", ctrl.JoinCommunity).Methods(http.MethodPost) // 添加群
+	authRouter.HandleFunc("/contact/loadcommunity", ctrl.LoadCommunity).Methods(http.MethodPost) // 获取群列表
+
 
 
 

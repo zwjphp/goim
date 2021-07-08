@@ -72,6 +72,16 @@ func JoinCommunity(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func LoadCommunity(w http.ResponseWriter, r *http.Request) {
+	var arg args.ContactArg
+	util.Bind(r, &arg)
+	if arg.Userid == 0 {
+		util.RespFail(w, "参数错误")
+		return
+	}
+	comunitys := contactService.SearchComunity(arg.Userid)
+	util.RespOkList(w, comunitys, len(comunitys))
+}
 
 
 
