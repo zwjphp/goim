@@ -2,6 +2,7 @@ package util
 
 import (
 	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"io"
 	"net/http"
@@ -64,6 +65,25 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 		return claims, nil
 	}
 	return nil, errors.New("令牌无效")
+}
+
+// 验证token
+func JWTAuthMiddleware(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	r.ParseForm()
+	authHeader := r.Form.Get("Authorization")
+	if authHeader == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"code":-2,"msg":"token不存在"}`)
+		return
+	}
+	mc, err := ParseToken(authHeader)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		io.WriteString(w, `{"code":-3,"msg":"无效的token"}`)
+		return
+	}
+	fmt.Println(mc.Username)
 }
 
 

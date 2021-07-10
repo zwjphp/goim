@@ -42,6 +42,8 @@ func RegisterRoutes(r *mux.Router)  {
 	// 记录
 	authRouter.HandleFunc("/message/chathistory", ctrl.ChatHistory).Methods(http.MethodPost) // 获取聊天记录
 
+	authRouter.HandleFunc("/", util.JWTAuthMiddleware).Methods("POST") // 验证token
+
 
 
 
