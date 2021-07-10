@@ -31,3 +31,31 @@ func Rpush(key string, val interface{}) {
 		panic(err)
 	}
 }
+
+// 从列表获取数据
+func LRange(key string, start, stop int64) ([]string, bool) {
+	r, err := Client.LRange(key, start, stop).Result()
+	if err == redis.Nil {
+		return nil, false
+	} else if err != nil {
+		return nil, false
+	}
+	return r, true
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

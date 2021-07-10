@@ -39,6 +39,8 @@ func RegisterRoutes(r *mux.Router)  {
 	authRouter.HandleFunc("/contact/loadcommunity", ctrl.LoadCommunity).Methods(http.MethodPost) // 获取群列表
 
 	authRouter.HandleFunc("/user/updateUser", ctrl.UpdateUserInfo).Methods(http.MethodPost) // 更新用户数据
+	// 记录
+	authRouter.HandleFunc("/message/chathistory", ctrl.ChatHistory).Methods(http.MethodPost) // 获取聊天记录
 
 
 
